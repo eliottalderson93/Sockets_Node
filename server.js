@@ -13,40 +13,48 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 const server = app.listen(1337);
 const io = require('socket.io')(server);
-var counter = 0;
-
+count = 0;
 io.on('connection', function (socket) { //2
   socket.emit('greeting', { msg: 'Greetings, from server Node, brought to you by Sockets! -Server' }); //3
   socket.on('thankyou', function (data) { //7
     console.log(data.msg); //8 (note: this log will be on your server's terminal)
   });
-  var myData = [];
-  socket.on('name', function (data) { //socket ping-pong
-    var index = 0;
-    console.log(data);
-    myData[index] = data;
-    socket.on('location', function (data) {
-      index++;
-      myData[index] = data;
-      console.log(data);
-      socket.on('language', function (data) {
-        index++;
-        myData[index] = data;
-        console.log(data);
-        socket.on('comment', function (data) {
-          index++;
-          myData[index] = data;
-          console.log(data);
-          socket.emit('survey', { arr: myData });
-          console.log(myData);
-        })
-      })
-    });
-  });
+  socket.on('click',function(){
+    count++;
+    socket.emit('count',count);
+  })
+  socket.on('reset',function(){
+    count = 0;
+    socket.emit('count',count);
+  })
+  //survey form
+  //var myData = [];
+  // socket.on('name', function (data) { //socket ping-pong
+  //   var index = 0;
+  //   console.log(data);
+  //   myData[index] = data;
+  //   socket.on('location', function (data) {
+  //     index++;
+  //     myData[index] = data;
+  //     console.log(data);
+  //     socket.on('language', function (data) {
+  //       index++;
+  //       myData[index] = data;
+  //       console.log(data);
+  //       socket.on('comment', function (data) {
+  //         index++;
+  //         myData[index] = data;
+  //         console.log(data);
+  //         socket.emit('survey', { arr: myData });
+  //         console.log(myData);
+  //       })
+  //     })
+  //   });
+  // });
 });
 
 app.get("/", function (req, res) {
-  res.render("survey.ejs")
+  res.render("counter.ejs")
 });
 
 // app.post("/survey",function(req,res){
