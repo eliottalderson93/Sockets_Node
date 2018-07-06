@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Dojo Survey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bulma.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var myData = [];
+            var socket = io(); //1
+            socket.on('greeting', function (data) { //4
+                console.log(data.msg); //5
+                socket.emit('thankyou', { msg: 'Thank you for connecting me! -Client' }); //6
+            });
+            $('form').submit(function () {
+                socket.emit('name', $('#name').val());
+                console.log($('#name').val());
+                socket.emit('location', $('#location').val());
+                console.log($('#location').val());
+                socket.emit('language', $('#language').val());
+                console.log($('#language').val());
+                socket.emit('comment', $('#comment').val());
+                console.log($('#comment').val());
+                return false;
+            });
+            socket.on('survey', function (data) {
+                console.log(data);
+                var p;
+                var text;
+                for (var i = 0; i < 4; i++) {
+                    p = "#" + i.toString();
+                    console.log(data.arr[i]);
+                    $(p).text(data.arr[i]);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container">
+                <p class="title">Dojo Survey</p>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <p id = "0"></p>
+            <p id = "1"></p>
+            <p id = "2"></p>
+            <p id = "3"></p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="levels">
+                <div class="level">
+                    <div class="level-left">
+                        <form method="post" id="myForm">
+                            <label for="name">Name:</label>
+                            <input type="text" name="name" id="name">
+                    </div>
+
+                </div>
+                <div class="level">
+                    <div class="level-left">
+                        <label for="location" class="level-left">Location:</label>
+                        <select name="location" class="level-left" id="location">
+                            <option value="1">Mountain View
+                            </option>
+                            <option value="2">Seattle</option>
+                            <option value="3">Burbank</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="level">
+                    <div class="level-left">
+                        <label for="language" class="level-left">Language:</label>
+                        <select name="language" class="level-left" id="language">
+                            <option value="1">Python
+                            </option>
+                            <option value="2">Java</option>
+                            <option value="3">JavaScript</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="level">
+                    <div class="level-left">
+                        <label for="comment" class="level-left">Comment:</label>
+                        <input type="textarea" name="comment" class="level-left" id="comment">
+                    </div>
+                </div>
+                <div class="level">
+                    <div class="level-right">
+                        <button class="level-right">Submit</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
