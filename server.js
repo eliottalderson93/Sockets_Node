@@ -19,14 +19,27 @@ io.on('connection', function (socket) { //2
   socket.on('thankyou', function (data) { //7
     console.log(data.msg); //8 (note: this log will be on your server's terminal)
   });
-  socket.on('click',function(){
-    count++;
-    socket.emit('count',count);
-  })
-  socket.on('reset',function(){
-    count = 0;
-    socket.emit('count',count);
-  })
+  socket.on('red',function(){
+    console.log("server red");
+    io.emit('change_red');
+  });
+  socket.on('blue',function(){
+    console.log("server blue");
+    io.emit('change_blue');
+  });
+  socket.on('green',function(){
+    console.log("server green");
+    io.emit('change_green');
+  });
+  //epic button
+  // socket.on('click',function(){
+  //   count++;
+  //   socket.emit('count',count);
+  // })
+  // socket.on('reset',function(){
+  //   count = 0;
+  //   socket.emit('count',count);
+  // })
   //survey form
   //var myData = [];
   // socket.on('name', function (data) { //socket ping-pong
@@ -54,7 +67,7 @@ io.on('connection', function (socket) { //2
 });
 
 app.get("/", function (req, res) {
-  res.render("counter.ejs")
+  res.render("colors.ejs")
 });
 
 // app.post("/survey",function(req,res){
