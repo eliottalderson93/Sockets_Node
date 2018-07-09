@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Colors</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bulma.css" />..
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type = "text/javascript">
+        $(document).ready(function(){
+            var socket = io();
+            $('#red').click(function(){
+                console.log("click red");
+                socket.emit('red');
+            });
+            $('#blue').click(function(){
+                console.log("click blue");
+                socket.emit('blue');
+            });
+            $('#green').click(function(){
+                console.log("click green");
+                socket.emit('green');
+            });
+            socket.on('change_red',function(){
+                console.log("change red");
+                $("#background").css("background-color","red");
+            });
+            socket.on('change_blue',function(){
+                console.log("change blue");
+                $("#background").css("background-color","blue");
+            });
+            socket.on('change_green',function(){
+                console.log("change green");
+                $("#background").css("background-color","green");
+            });
+        });
+    </script>
+</head>
+<body>
+    <section class = "hero is-black">
+        <div class = "hero-body">
+            <div class = "container">
+                <p class = "title">Colors</p>
+            </div>
+        </div>
+    </section>
+    <section class = "section" id = "background" style = "height:125vh;">
+        <div class = "container">
+            <div class = "level">
+                <div class = "level-item">
+                    <button id = "red" class = "button is-dark is-large is-focused">Red</button>
+                </div>
+                <div class = "level-item">
+                    <button id = "blue" class = "button is-dark is-large is-focused">Blue</button>
+                </div>
+                <div class = "level-item">
+                    <button id = "green" class = "button is-dark is-large is-focused">Green</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
