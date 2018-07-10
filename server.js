@@ -11,26 +11,40 @@ app.set('view engine', 'ejs');
 var bodyParser = require('body-parser');
 // use it!
 app.use(bodyParser.urlencoded({ extended: true }));
-const server = app.listen(1337);
+const server = app.listen(8000);
 const io = require('socket.io')(server);
 count = 0;
+var users = [];
 io.on('connection', function (socket) { //2
   socket.emit('greeting', { msg: 'Greetings, from server Node, brought to you by Sockets! -Server' }); //3
   socket.on('thankyou', function (data) { //7
     console.log(data.msg); //8 (note: this log will be on your server's terminal)
   });
-  socket.on('red',function(){
-    console.log("server red");
-    io.emit('change_red');
+  socket.on("new_user", function (data) {
+    var user = { user_name: data.name, socket_id: socket.id };
+    users.push(user);
+    console.log("added new user:", user);
+    console.log("all users: ", users);
+    io.emit("add_user", users);
+    return false;
+});
+  socket.on("new_msg",function(data){
+    console.log("SERVER: ",data);
+    io.emit("append_msg",data);
   });
-  socket.on('blue',function(){
-    console.log("server blue");
-    io.emit('change_blue');
-  });
-  socket.on('green',function(){
-    console.log("server green");
-    io.emit('change_green');
-  });
+  //colors
+  // socket.on('red',function(){
+  //   console.log("server red");
+  //   io.emit('change_red');
+  // });billy
+  // socket.on('blue',function(){
+  //   console.log("server blue");
+  //   io.emit('change_blue');
+  // });
+  // socket.on('green',function(){
+  //   console.log("server green");
+  //   io.emit('change_green');
+  // });
   //epic button
   // socket.on('click',function(){
   //   count++;
@@ -67,7 +81,7 @@ io.on('connection', function (socket) { //2
 });
 
 app.get("/", function (req, res) {
-  res.render("colors.ejs")
+  res.render("chat.ejs")
 });
 
 // app.post("/survey",function(req,res){

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Chatroom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bulma.css" />..
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const socket = io();
+            var name;
+            var active_users = [];
+            $("#remove").remove();
+            while (!name) {
+                name = prompt("Please enter your name", "");
+                console.log("new user: ", name);
+            }
+            socket.emit("new_user", { name });
+            socket.on("add_user", function (data) {
+                console.log(data);
+                active_users = data;
+                for(user in active_users){
+                    $("#active_users").append("<p class = 'remove'>" +active_users[user].user_name+"</p>");
+                }
+            });
+            $("form").submit(function (event) {
+                var msg = $("#message").val();
+                console.log("DOM:",msg);
+                socket.emit("new_msg", msg);
+                event.preventDefault();
+            });
+            socket.on("append_msg",function(data){
+                console.log("APPEND: ",data);
+                $("#chatroom").append('<div class="level" id="message"><div class="level-left"><p id="msg_text">User: Message</p></div></div>');
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <section class="columns">
+        <div class="column is-three-quarters">
+            <section class="hero is-black">
+                <div class="hero-body">
+                    <div class="container">
+                        <p class="title">Chatroom</p>
+                    </div>
+                </div>
+            </section>
+            <div class="container">
+                <p class="title">Conversation</p>
+                <div class="container" id="chatroom">
+                    <div class="level" id="message">
+                        <div class="level-left">
+                            <p id="msg_text">User: Message</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="section">
+                <div class="container">
+                    <form>
+                        <input type="text" name="message" style="display:block;width:75%;" id = "message">
+                        <button class="button is-light is-hovered">Send</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div class="column">
+            <div class="tile">
+                <p id="active_users">Users in Chat:</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
